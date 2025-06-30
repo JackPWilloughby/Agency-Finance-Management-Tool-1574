@@ -5,7 +5,7 @@ import * as FiIcons from 'react-icons/fi';
 import SafeIcon from '../common/SafeIcon';
 import { useAuth } from '../hooks/useAuth';
 
-const { FiHome, FiUsers, FiDollarSign, FiFileText, FiTrendingUp, FiLogOut, FiShield, FiMenu, FiX, FiUser } = FiIcons;
+const { FiHome, FiUsers, FiDollarSign, FiFileText, FiTrendingUp, FiLogOut, FiShield, FiMenu, FiX, FiUser, FiSettings } = FiIcons;
 
 const Navigation = () => {
   const location = useLocation();
@@ -122,6 +122,21 @@ const Navigation = () => {
                     </Link>
                   );
                 })}
+
+                {/* Profile Settings */}
+                <Link to="/profile" onClick={closeMobileMenu}>
+                  <motion.div
+                    className={`flex items-center space-x-3 px-4 py-4 rounded-xl transition-all duration-200 touch-target ${
+                      location.pathname === '/profile'
+                        ? 'bg-gradient-to-r from-purple-600 to-purple-700 text-white shadow-lg'
+                        : 'text-slate-300 hover:bg-slate-700 hover:text-white'
+                    }`}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <SafeIcon icon={FiSettings} className="text-lg" />
+                    <span className="font-medium">Profile Settings</span>
+                  </motion.div>
+                </Link>
               </div>
             </div>
 
@@ -189,6 +204,22 @@ const Navigation = () => {
                 </Link>
               );
             })}
+
+            {/* Profile Settings */}
+            <Link to="/profile">
+              <motion.div
+                className={`flex items-center space-x-3 px-4 py-3 xl:py-4 rounded-xl transition-all duration-200 ${
+                  location.pathname === '/profile'
+                    ? 'bg-gradient-to-r from-purple-600 to-purple-700 text-white shadow-lg'
+                    : 'text-slate-300 hover:bg-slate-700 hover:text-white'
+                }`}
+                whileHover={{ x: location.pathname === '/profile' ? 0 : 4 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <SafeIcon icon={FiSettings} className="text-lg" />
+                <span className="font-medium">Profile Settings</span>
+              </motion.div>
+            </Link>
           </div>
         </div>
 

@@ -13,16 +13,19 @@ import Clients from './pages/Clients';
 import Costs from './pages/Costs';
 import Financials from './pages/Financials';
 import Advice from './pages/Advice';
+import Profile from './pages/Profile';
 import { FinanceProvider } from './context/FinanceContext';
 import './App.css';
 
 function App() {
   const { user, loading, signIn, signUp, error } = useAuth();
 
+  // Show loading spinner while checking authentication
   if (loading) {
-    return <LoadingSpinner />;
+    return <LoadingSpinner message="Initializing Agency Finance..." />;
   }
 
+  // Show auth form if not authenticated
   if (!user) {
     return (
       <Router>
@@ -46,6 +49,7 @@ function App() {
     );
   }
 
+  // Show main app if authenticated
   return (
     <FinanceProvider>
       <Router>
@@ -131,6 +135,22 @@ function App() {
                         transition={{ duration: 0.3 }}
                       >
                         <Advice />
+                      </motion.div>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/profile"
+                  element={
+                    <ProtectedRoute>
+                      <motion.div
+                        key="profile"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <Profile />
                       </motion.div>
                     </ProtectedRoute>
                   }

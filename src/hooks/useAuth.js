@@ -7,32 +7,55 @@ export function useAuth() {
   const [error, setError] = useState(null)
 
   useEffect(() => {
+    let mounted = true
+
     // Get initial session
-    supabase.auth.getSession().then(({ data: { session }, error }) => {
-      if (error) {
-        console.error('Auth session error:', error)
-        setError(error.message)
-      } else {
-        setUser(session?.user ?? null)
+    const getSession = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession()
+        
+        if (!mounted) return
+
+        if (error) {
+          console.error('Auth session error:', error)
+          setError(error.message)
+        } else {
+          setUser(session?.user ?? null)
+        }
+      } catch (err) {
+        console.error('Session fetch error:', err)
+        if (mounted) {
+          setError('Failed to load session')
+        }
+      } finally {
+        if (mounted) {
+          setLoading(false)
+        }
       }
-      setLoading(false)
-    })
+    }
+
+    getSession()
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         console.log('Auth event:', event, session?.user?.email)
-        setUser(session?.user ?? null)
-        setError(null)
-        
-        if (event === 'SIGNED_OUT') {
-          // Clear any cached data
-          localStorage.removeItem('agency_finance_data')
+        if (mounted) {
+          setUser(session?.user ?? null)
+          setError(null)
+          
+          if (event === 'SIGNED_OUT') {
+            // Clear any cached data
+            localStorage.removeItem('agency_finance_data')
+          }
         }
       }
     )
 
-    return () => subscription.unsubscribe()
+    return () => {
+      mounted = false
+      subscription.unsubscribe()
+    }
   }, [])
 
   const signUp = async (email, password, metadata = {}) => {
